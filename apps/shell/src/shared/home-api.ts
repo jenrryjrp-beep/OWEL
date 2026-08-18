@@ -1,4 +1,5 @@
 import type { UpdateChannel } from './update-api'
+import type { AiChatResponse, AiSettings } from '@genoffice/ai-provider'
 
 /** UI language; kept self-contained here (mirrors Lang in @genoffice/i18n) */
 export type UiLanguage =
@@ -24,6 +25,14 @@ export type UiLanguage =
 
 /** UI theme preference */
 export type UiTheme = 'light' | 'dark' | 'system'
+
+/** Renderer-side surface for the AI settings and chat channels. */
+export interface AiSettingsApi {
+  getAiSettings(): Promise<AiSettings>
+  setAiSettings(settings: AiSettings): Promise<void>
+  /** One non-streaming round trip, used by Settings to prove the config works. */
+  testAiSettings(settings: AiSettings): Promise<AiChatResponse>
+}
 
 /** a recent file entry shown on the home screen; type derives from the extension */
 export interface RecentEntry {

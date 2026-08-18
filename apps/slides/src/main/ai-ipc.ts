@@ -11,6 +11,7 @@ import {
   AiCreditsError,
   AiTimeoutError,
   defaultAiSettings,
+  isSafeAiSettings,
   resolveAiSettings,
   setRescueFetch,
   streamForProvider,
@@ -56,16 +57,16 @@ function writeJson(path: string, value: unknown): void {
 
 const activeAiStreams = new Map<string, AbortController>()
 
+export function readAiSettings(stored: Partial<AiSettings> & LegacyAiSettings): AiSettings {
+  return resolveAiSettings(stored, defaultAiSettings())
+}
+
 export function registerAiIpc(): void {
   // Node fetch (undici) direct connections get reset under VPN/tun setups; retry over Chromium's stack
   setRescueFetch((url, init) => net.fetch(url, init))
 
   ipcMain.handle('ai:get-settings', (): AiSettings => {
-    const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(AI_SETTINGS_PATH(), {})
-    const settings = resolveAiSettings(stored, defaultAiSettings())
-    // AI features all go through Genspark (gsk login); stored settings that chose another provider are normalized back
-    settings.provider = 'genspark'
-    return settings
+    return readAiSettings(readJson<Partial<AiSettings> & LegacyAiSettings>(AI_SETTINGS_PATH(), {}))
   })
 
   // Genspark account (gsk login state): the auth source for AI features; when logged out the frontend uses this to guide login
@@ -84,6 +85,11 @@ export function registerAiIpc(): void {
   })
 
   ipcMain.handle('ai:set-settings', (_event, settings: AiSettings) => {
+    // Four renderers reach this channel — shell's plus the docs, sheets and
+    // slides tabs — and the docs renderer parses untrusted .docx. The API key
+    // travels to whatever host baseUrl names, so this is the boundary that
+    // keeps a hostile write from redirecting the key off the LAN.
+    if (!isSafeAiSettings(settings)) throw new Error('invalid ai settings')
     writeJson(AI_SETTINGS_PATH(), settings)
   })
 

@@ -40,6 +40,7 @@ import {
   AiTimeoutError,
   chatForProvider,
   defaultAiSettings,
+  isSafeAiSettings,
   resolveAiSettings,
   setRescueFetch,
   streamForProvider,
@@ -2479,17 +2480,21 @@ const SETTINGS_PATH = () => userDataPath('ai-settings.json')
 const activeAiStreams = new Map<string, AbortController>()
 
 /**
+ * Fork: AI goes through a self-hosted or local gateway, so the stored
+ * provider choice is honoured. Upstream reset it to 'genspark' here.
+ */
+export function readAiSettings(stored: Partial<AiSettings> & LegacyAiSettings): AiSettings {
+  return resolveAiSettings(stored, defaultAiSettings())
+}
+
+/**
  * AI settings + chat/stream proxy handlers. Split out so the shell can
  * register them exactly once for all window types (docs, sheets, home) —
  * sheets' standalone AI handlers use the same channel names.
  */
 export function registerAiIpc(): void {
   ipcMain.handle('ai:get-settings', (): AiSettings => {
-    const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(SETTINGS_PATH(), {})
-    const settings = resolveAiSettings(stored, defaultAiSettings())
-    // AI features all go through Genspark (gsk login); legacy settings with another provider are reset
-    settings.provider = 'genspark'
-    return settings
+    return readAiSettings(readJson<Partial<AiSettings> & LegacyAiSettings>(SETTINGS_PATH(), {}))
   })
 
   // Genspark account (gsk login state): auth source for AI features; the frontend uses it to prompt login when logged out
@@ -2508,6 +2513,11 @@ export function registerAiIpc(): void {
   })
 
   ipcMain.handle('ai:set-settings', (_event, settings: AiSettings) => {
+    // Four renderers reach this channel — shell's plus the docs, sheets and
+    // slides tabs — and the docs renderer parses untrusted .docx. The API key
+    // travels to whatever host baseUrl names, so this is the boundary that
+    // keeps a hostile write from redirecting the key off the LAN.
+    if (!isSafeAiSettings(settings)) throw new Error('invalid ai settings')
     writeJson(SETTINGS_PATH(), settings)
   })
 

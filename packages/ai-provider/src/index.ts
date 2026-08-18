@@ -14,6 +14,7 @@ export {
   AI_PROVIDERS,
   GENSPARK_LLM_BASE_URLS,
   defaultAiSettings,
+  isSafeAiSettings,
   resolveAiSettings,
 } from './providers'
 export { chatForProvider } from './chat'

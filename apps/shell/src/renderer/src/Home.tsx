@@ -8,6 +8,7 @@ import iconPdf from './assets/file-pdf.svg'
 import iconMd from './assets/file-md.svg'
 import type {
   AccountStatus,
+  AiSettingsApi,
   CloudProjectKind,
   CloudProjectsSnapshot,
   HomeApi,
@@ -24,6 +25,7 @@ declare global {
   interface Window {
     aiOffice: HomeApi
     aiOfficeProject?: ProjectHomeApi
+    aiOfficeSettings: AiSettingsApi
   }
 }
 

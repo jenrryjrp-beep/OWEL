@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useI18n } from './locale'
 import type { StringKey } from './locale'
+import type { AiSettings } from '@genoffice/ai-provider'
 import type { AccountStatus, UiTheme } from '../../shared/home-api'
 import './settings.css'
 
@@ -45,10 +46,11 @@ const CHANNEL_OPTIONS = [
   { value: 'beta', labelKey: 'channelBeta' },
 ] as const satisfies readonly { value: 'stable' | 'beta'; labelKey: StringKey }[]
 
-type SectionId = 'account' | 'general' | 'about'
+type SectionId = 'account' | 'aiProvider' | 'general' | 'about'
 
 const SECTIONS: readonly { id: SectionId; labelKey: StringKey }[] = [
   { id: 'account', labelKey: 'setSecAccount' },
+  { id: 'aiProvider', labelKey: 'setSecAiProvider' },
   { id: 'general', labelKey: 'setSecGeneral' },
   { id: 'about', labelKey: 'setSecAbout' },
 ]
@@ -78,6 +80,25 @@ function SectionIcon({ id }: { id: SectionId }) {
         />
         <circle cx="11.5" cy="5" r="1.7" stroke="currentColor" strokeWidth="1.3" />
         <circle cx="4.5" cy="11" r="1.7" stroke="currentColor" strokeWidth="1.3" />
+      </svg>
+    )
+  }
+  if (id === 'aiProvider') {
+    return (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path
+          d="M8 1.5 2.5 4v4c0 3.1 2.3 5.6 5.5 6.5 3.2-.9 5.5-3.4 5.5-6.5V4L8 1.5Z"
+          stroke="currentColor"
+          strokeWidth="1.3"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M5.8 7.8 7.3 9.3l3-3"
+          stroke="currentColor"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     )
   }
@@ -149,6 +170,14 @@ export function SettingsModal({
   const [saveDir, setSaveDir] = useState('')
   const [channel, setChannel] = useState<'stable' | 'beta'>('stable')
   const [appVersion, setAppVersion] = useState('')
+  const [aiBaseUrl, setAiBaseUrl] = useState('')
+  const [aiApiKey, setAiApiKey] = useState('')
+  const [aiModel, setAiModel] = useState('')
+  const [aiLoaded, setAiLoaded] = useState(false)
+  const [aiStatus, setAiStatus] = useState<'idle' | 'saving' | 'saved' | 'testing' | 'ok' | 'fail'>(
+    'idle',
+  )
+  const [aiError, setAiError] = useState('')
 
   useEffect(() => {
     let alive = true
@@ -170,6 +199,17 @@ export function SettingsModal({
   }, [])
 
   useEffect(() => {
+    void window.aiOfficeSettings
+      .getAiSettings()
+      .then((s) => {
+        setAiBaseUrl(s.providers.custom?.baseUrl ?? '')
+        setAiApiKey(s.providers.custom?.apiKey ?? '')
+        setAiModel(s.providers.custom?.model ?? '')
+      })
+      .finally(() => setAiLoaded(true))
+  }, [])
+
+  useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
@@ -188,6 +228,64 @@ export function SettingsModal({
     void window.aiOffice.pickDefaultSaveDir?.().then((dir) => {
       if (dir) setSaveDir(dir)
     })
+  }
+
+  /** Trim, drop trailing slashes, and strip an accidentally-pasted endpoint suffix. */
+  function normalizeBaseUrl(raw: string): string {
+    return raw
+      .trim()
+      .replace(/\/+$/, '')
+      .replace(/\/chat\/completions$/, '')
+  }
+
+  function buildNext(s: AiSettings): AiSettings {
+    const trimmedKey = aiApiKey.trim()
+    return {
+      ...s,
+      provider: 'custom',
+      providers: {
+        ...s.providers,
+        custom: {
+          ...s.providers.custom,
+          baseUrl: normalizeBaseUrl(aiBaseUrl),
+          apiKey: trimmedKey,
+          model: aiModel.trim(),
+        },
+      },
+    }
+  }
+
+  const saveAiSettings = () => {
+    setAiStatus('saving')
+    setAiError('')
+    void window.aiOfficeSettings
+      .getAiSettings()
+      .then((s) => window.aiOfficeSettings.setAiSettings(buildNext(s)))
+      .then(() => {
+        setAiBaseUrl(normalizeBaseUrl(aiBaseUrl))
+        setAiModel(aiModel.trim())
+        setAiStatus('saved')
+      })
+      .catch((e: Error) => {
+        setAiStatus('fail')
+        setAiError(e.message)
+      })
+  }
+
+  const testAiSettings = () => {
+    setAiStatus('testing')
+    setAiError('')
+    void window.aiOfficeSettings
+      .getAiSettings()
+      .then((s) => window.aiOfficeSettings.testAiSettings(buildNext(s)))
+      .then((res) => {
+        setAiStatus(res.ok ? 'ok' : 'fail')
+        if (!res.ok) setAiError(res.error ?? '')
+      })
+      .catch((e: Error) => {
+        setAiStatus('fail')
+        setAiError(e.message)
+      })
   }
 
   const loggedIn = status?.loggedIn ?? false
@@ -274,6 +372,91 @@ export function SettingsModal({
                       </button>
                     </>
                   )}
+                </div>
+              </>
+            )}
+            {section === 'aiProvider' && (
+              <>
+                <h3 className="set-pane-title">{t('setSecAiProvider')}</h3>
+                <div className="set-field">
+                  <div className="set-field-text">
+                    <label className="set-field-label" htmlFor="set-ai-base-url">
+                      {t('setAiBaseUrl')}
+                    </label>
+                  </div>
+                  <input
+                    id="set-ai-base-url"
+                    className="set-input"
+                    type="url"
+                    disabled={!aiLoaded}
+                    value={aiBaseUrl}
+                    onChange={(e) => {
+                      setAiBaseUrl(e.target.value)
+                      setAiStatus('idle')
+                    }}
+                  />
+                </div>
+                <div className="set-field">
+                  <div className="set-field-text">
+                    <label className="set-field-label" htmlFor="set-ai-api-key">
+                      {t('setAiApiKey')}
+                    </label>
+                  </div>
+                  <input
+                    id="set-ai-api-key"
+                    className="set-input"
+                    type="password"
+                    autoComplete="off"
+                    disabled={!aiLoaded}
+                    value={aiApiKey}
+                    onChange={(e) => {
+                      setAiApiKey(e.target.value)
+                      setAiStatus('idle')
+                    }}
+                  />
+                </div>
+                <div className="set-field">
+                  <div className="set-field-text">
+                    <label className="set-field-label" htmlFor="set-ai-model">
+                      {t('setAiModel')}
+                    </label>
+                  </div>
+                  <input
+                    id="set-ai-model"
+                    className="set-input"
+                    type="text"
+                    disabled={!aiLoaded}
+                    value={aiModel}
+                    onChange={(e) => {
+                      setAiModel(e.target.value)
+                      setAiStatus('idle')
+                    }}
+                  />
+                </div>
+                <div className="set-field">
+                  <button
+                    className="set-btn"
+                    disabled={
+                      !aiLoaded || aiStatus === 'saving' || !aiBaseUrl.trim() || !aiModel.trim()
+                    }
+                    onClick={saveAiSettings}
+                  >
+                    {t('setAiSave')}
+                  </button>
+                  <button
+                    className="set-btn"
+                    disabled={
+                      !aiLoaded || aiStatus === 'testing' || !aiBaseUrl.trim() || !aiModel.trim()
+                    }
+                    onClick={testAiSettings}
+                  >
+                    {t('setAiTest')}
+                  </button>
+                  <span className="set-field-value">
+                    {aiStatus === 'saved' && t('setAiSaved')}
+                    {aiStatus === 'ok' && t('setAiTestOk')}
+                    {aiStatus === 'fail' && `${t('setAiTestFail')}${aiError ? `: ${aiError}` : ''}`}
+                  </span>
                 </div>
               </>
             )}

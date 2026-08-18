@@ -79,10 +79,14 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
   },
   {
     id: 'custom',
-    label: 'Custom',
+    label: 'Local / Custom (OpenAI-compatible)',
+    // Free-text model field in the UI — this slot is not restricted to any
+    // fixed model list. Works with Ollama, LM Studio, vLLM, llama.cpp
+    // server, text-generation-webui, OpenRouter, or any other endpoint that
+    // implements the OpenAI chat/completions wire protocol.
     models: [],
     defaultModel: '',
-    keyPlaceholder: 'API Key',
+    keyPlaceholder: 'sk-... (leave blank if your server needs no key)',
     needsBaseUrl: true,
   },
 ]
@@ -104,31 +108,56 @@ export function defaultAiSettings(
       baseUrl: meta.needsBaseUrl ? '' : undefined,
     }
   }
-  return { provider: 'genspark', providers }
+  return { provider: 'custom', providers }
 }
 
 /**
- * Merge on-disk settings over freshly computed defaults, migrating the
- * pre-provider shape (a single OpenAI-compatible endpoint) into the
- * "custom" provider slot. `stored` is whatever the caller read from its
- * settings file (already JSON-parsed); this function does no file I/O.
+ * Merge on-disk settings over freshly computed defaults. `stored` is whatever
+ * the caller read from its settings file (already JSON-parsed); this function
+ * does no file I/O.
  */
 export function resolveAiSettings(
   stored: Partial<AiSettings> & LegacyAiSettings,
   defaults: AiSettings,
 ): AiSettings {
   if (!stored.providers) {
-    if (stored.apiKey) {
-      defaults.providers.custom = {
-        apiKey: stored.apiKey,
-        model: stored.model ?? '',
-        baseUrl: stored.baseUrl ?? 'https://api.openai.com/v1',
-      }
-    }
+    // Fork: 'custom' is the local/self-hosted slot, so a legacy key — which
+    // was issued for some other vendor — must never be carried into it, and
+    // the baseUrl must never fall back to a third-party host. Upstream could
+    // leave this branch alone because it selected 'genspark'; we select
+    // 'custom', so the branch is live. Drop the key and keep the blank defaults.
     return defaults
   }
   return {
     provider: stored.provider ?? defaults.provider,
     providers: { ...defaults.providers, ...stored.providers },
   }
+}
+
+/**
+ * Structural guard for anything about to be persisted as AI settings. The
+ * baseUrl check is the load-bearing part: the API key travels to whatever host
+ * baseUrl names, so an unvalidated write is how a credential leaves the LAN.
+ * Applied in each app's main-process ai:set-settings handler (Task 4) and again
+ * in shell's preload (Task 5) so a bad value fails before the IPC hop.
+ */
+export function isSafeAiSettings(value: unknown): boolean {
+  if (typeof value !== 'object' || value === null) return false
+  const s = value as { provider?: unknown; providers?: unknown }
+  if (typeof s.provider !== 'string') return false
+  if (typeof s.providers !== 'object' || s.providers === null) return false
+  for (const cfg of Object.values(s.providers as Record<string, unknown>)) {
+    if (typeof cfg !== 'object' || cfg === null) return false
+    const c = cfg as { apiKey?: unknown; model?: unknown; baseUrl?: unknown }
+    if (typeof c.apiKey !== 'string' || typeof c.model !== 'string') return false
+    if (c.baseUrl === undefined || c.baseUrl === '') continue
+    if (typeof c.baseUrl !== 'string') return false
+    try {
+      const proto = new URL(c.baseUrl).protocol
+      if (proto !== 'http:' && proto !== 'https:') return false
+    } catch {
+      return false
+    }
+  }
+  return true
 }

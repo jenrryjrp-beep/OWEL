@@ -55,6 +55,7 @@ import {
   AiTimeoutError,
   chatForProvider,
   defaultAiSettings,
+  isSafeAiSettings,
   resolveAiSettings,
   setRescueFetch,
   streamForProvider,
@@ -2111,6 +2112,10 @@ export function registerSheetsIpc(): void {
 
 let aiIpcRegistered = false
 
+export function readAiSettings(stored: Partial<AiSettings> & LegacyAiSettings): AiSettings {
+  return resolveAiSettings(stored, defaultAiSettings())
+}
+
 export function registerSheetsAiIpc(): void {
   if (aiIpcRegistered) return
   aiIpcRegistered = true
@@ -2120,12 +2125,7 @@ export function registerSheetsAiIpc(): void {
 
   ipcMain.handle(IPC_CHANNELS.aiGetSettings, (event): AiSettings => {
     sessionFor(event)
-    const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(SETTINGS_PATH(), {})
-    const settings = resolveAiSettings(stored, defaultAiSettings())
-    // AI features all go through Genspark (gsk login); legacy settings that chose
-    // another provider are reset
-    settings.provider = 'genspark'
-    return settings
+    return readAiSettings(readJson<Partial<AiSettings> & LegacyAiSettings>(SETTINGS_PATH(), {}))
   })
 
   // Genspark account (gsk login state): the auth source for AI features; the
@@ -2147,6 +2147,11 @@ export function registerSheetsAiIpc(): void {
   ipcMain.handle(IPC_CHANNELS.aiSetSettings, (event, input: unknown) => {
     sessionFor(event)
     const settings = aiSettingsInputSchema.parse(input)
+    // Four renderers reach this channel — shell's plus the docs, sheets and
+    // slides tabs — and the docs renderer parses untrusted .docx. The API key
+    // travels to whatever host baseUrl names, so this is the boundary that
+    // keeps a hostile write from redirecting the key off the LAN.
+    if (!isSafeAiSettings(settings)) throw new Error('invalid ai settings')
     writeJson(SETTINGS_PATH(), settings)
   })
 

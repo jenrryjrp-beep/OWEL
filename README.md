@@ -1,14 +1,22 @@
-# [GenOffice](https://genoffice.ai/)
+# GenOffice (local-LLM fork)
 
-**The world's first full-featured open-source AI Office suite.**
+**A free, open-source AI Office suite — this fork drops the cloud-account
+requirement and talks to any OpenAI-compatible endpoint instead: a local
+server (Ollama, LM Studio, vLLM, llama.cpp server, text-generation-webui) or
+a hosted API (OpenRouter, or any other OpenAI-compatible provider).**
 
-[![License: Apache-2.0](https://img.shields.io/github/license/genspark-ai/genoffice)](LICENSE)
-[![Latest release](https://img.shields.io/github/v/release/genspark-ai/genoffice)](https://github.com/genspark-ai/genoffice/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/genspark-ai/genoffice/total)](https://github.com/genspark-ai/genoffice/releases)
-[![GitHub stars](https://img.shields.io/github/stars/genspark-ai/genoffice?style=flat)](https://github.com/genspark-ai/genoffice/stargazers)
+> Forked from [genspark-ai/genoffice](https://github.com/genspark-ai/genoffice)
+> (Apache-2.0). Changed per Apache-2.0 §4(b): the AI provider defaults
+> (`packages/ai-provider/src/providers.ts`) and settings UI
+> (`apps/shell/src/renderer/src/SettingsModal.tsx`) — see git history for the
+> full diff. Everything else is upstream GenOffice, unmodified.
+
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 ![Platforms: macOS | Windows | Linux](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
 
-[Website](https://genoffice.ai/) · [Download](https://github.com/genspark-ai/genoffice/releases/latest) · [Demo](https://www.youtube.com/watch?v=B2pLdMX95v4)
+[Demo](https://www.youtube.com/watch?v=B2pLdMX95v4) — upstream's video; the
+editor features it shows are unchanged in this fork, only the AI provider
+setup differs.
 
 GenOffice is a free, open-source alternative to Microsoft Office for macOS,
 Windows, and Linux, built around AI editing as a first-class workflow rather
@@ -36,44 +44,13 @@ layer.
 - **macOS, Windows, Linux.**
 - **Free & open-source (Apache-2.0).**
 
-## Download
+## Get it
 
-| Platform                             | Requirements                                          | Download                                                                                                                         |
-| ------------------------------------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| **macOS** — Apple Silicon (arm64)    | macOS 11+                                             | [GenOffice-0.6.101-arm64.dmg](https://github.com/genspark-ai/genoffice/releases/download/v0.6.101/GenOffice-0.6.101-arm64.dmg)   |
-| **macOS** — Intel (x64)              | macOS 11+                                             | [GenOffice-0.6.101.dmg](https://github.com/genspark-ai/genoffice/releases/download/v0.6.101/GenOffice-0.6.101.dmg)               |
-| **Windows** (x64)                    | Windows 10+                                           | [GenOfficeSetup-v0.6.101.exe](https://github.com/genspark-ai/genoffice/releases/download/v0.6.101/GenOfficeSetup-v0.6.101.exe)   |
-| **Linux** — Debian / Ubuntu          | x86_64, glibc 2.34+ (Ubuntu 22.04 or newer)           | [genoffice_0.6.101_amd64.deb](https://github.com/genspark-ai/genoffice/releases/download/v0.6.101/genoffice_0.6.101_amd64.deb)   |
-| **Linux** — Fedora / RHEL / openSUSE | x86_64, glibc 2.34+ (Fedora 35+, RHEL 9+, Leap 15.6+) | [genoffice-0.6.101.x86_64.rpm](https://github.com/genspark-ai/genoffice/releases/download/v0.6.101/genoffice-0.6.101.x86_64.rpm) |
-| **Linux** — other distributions      | x86_64, glibc 2.34+, FUSE 2                           | [GenOffice-0.6.101.AppImage](https://github.com/genspark-ai/genoffice/releases/download/v0.6.101/GenOffice-0.6.101.AppImage)     |
-
-All builds come from `main`; the macOS and Windows installers are signed.
-Older versions are on the [Releases](https://github.com/genspark-ai/genoffice/releases) page.
-
-### Installing on Linux
-
-The deb installs with apt — it pulls in the dependencies and adds GenOffice
-to the applications menu:
-
-```bash
-sudo apt install ./genoffice_0.6.101_amd64.deb
-```
-
-On Fedora / RHEL-family / openSUSE, install the rpm instead:
-
-```bash
-sudo dnf install ./genoffice-0.6.101.x86_64.rpm     # Fedora / RHEL family
-sudo zypper install ./genoffice-0.6.101.x86_64.rpm  # openSUSE
-```
-
-The AppImage instead runs in place: install the FUSE 2 runtime
-(`sudo apt install libfuse2`; on Ubuntu 24.04 the package is `libfuse2t64`),
-make the file executable, then run it:
-
-```bash
-chmod +x GenOffice-0.6.101.AppImage
-./GenOffice-0.6.101.AppImage
-```
+This fork does not publish prebuilt installers — build from source (see
+[Development](#development) below: `npm install`, then `npm run dist:mac` /
+`dist:win` / `dist:linux`). Upstream's own prebuilt installers, linked from
+[genspark-ai/genoffice](https://github.com/genspark-ai/genoffice), default to
+the Genspark cloud provider — they are not this fork.
 
 ## Apps
 
@@ -95,13 +72,27 @@ tokens (`packages/ui`), with a CI guard that keeps chrome colors on the token
 system. Document surfaces stay light in dark mode — Word-style dark chrome
 around white paper — so files render and export identically in both themes.
 
-**AI backend (Genspark).** The apps sign in to a Genspark account through a
-device-code flow; no model API key is entered or stored by the user. Model
-calls route through the Genspark proxy (Claude, GPT, and Gemini families).
-The same account also unlocks the Genspark ("gsk") tool endpoints the agents
-build on — web and image search, image generation and editing,
-image/audio/video analysis, and audio transcription — all reachable through
-`packages/ai-search` for anyone extending the agent layer.
+**AI backend.** On a fresh install this fork defaults to the **Local /
+Custom (OpenAI-compatible)** provider with the base URL, model, and key all
+blank — nothing is pre-configured, no account or cloud sign-in required.
+Point it at any server that speaks the OpenAI `chat/completions` wire
+protocol:
+
+| Server                             | Base URL                       | Model                    | API key      |
+| ----------------------------------- | -------------------------------- | -------------------------- | --------------- |
+| [Ollama](https://ollama.com/)       | `http://localhost:11434/v1`      | e.g. `llama3.1`             | leave blank    |
+| [LM Studio](https://lmstudio.ai/)   | `http://localhost:1234/v1`       | the model loaded in-app     | leave blank    |
+| [OpenRouter](https://openrouter.ai/) | `https://openrouter.ai/api/v1`  | e.g. `openai/gpt-4o-mini`   | your OpenRouter key |
+
+Settings → AI Provider → Local / Custom (OpenAI-compatible), fill in the
+three fields, then Test connection.
+
+Upstream's other providers are still selectable in the same screen and work
+as upstream describes: **Genspark** signs in via a device-code flow (no key
+needed) and also unlocks the Genspark ("gsk") tool endpoints the agents
+build on — web/image search, image generation and editing, media analysis,
+audio transcription (`packages/ai-search`); **Claude / Gemini / DeepSeek /
+OpenAI** need that vendor's own API key.
 
 ## Engine packages
 
@@ -172,8 +163,10 @@ back byte-for-byte, so documents keep working in Microsoft Office.
 
 **Does GenOffice work offline?**
 Document editing is fully local — files never leave your machine to be
-opened, edited, or saved. The AI features (agents, search, image tools) sign
-in to a Genspark account and need a network connection.
+opened, edited, or saved. The AI features need a network connection to
+whatever endpoint you configure in Settings → AI Provider — a LAN-only local
+server (e.g. Ollama) keeps that traffic off the public internet too; a
+cloud provider (Genspark, OpenRouter, a named vendor) does not.
 
 **Can GenOffice edit PDF files?**
 Yes — real PDF text and image editing that rewrites the page content stream

@@ -3,6 +3,7 @@ import type { IpcRendererEvent } from 'electron'
 import type {
   AccountLoginEvent,
   AccountStatus,
+  AiSettingsApi,
   CloudProjectsSnapshot,
   HomeApi,
   RecentEntry,
@@ -14,6 +15,7 @@ import type {
   UiLanguage,
 } from '../shared/home-api'
 import { HOME_CHANNELS, PROJECT_CHANNELS } from '../shared/home-api'
+import { isSafeAiSettings } from '@genoffice/ai-provider'
 import type { TabsApi, TabSummary } from '../shared/tabs-api'
 import { TABS_CHANNELS } from '../shared/tabs-api'
 
@@ -286,3 +288,21 @@ const tabsApi: TabsApi = {
 }
 
 contextBridge.exposeInMainWorld('aiOfficeTabs', tabsApi)
+
+const aiSettingsApi: AiSettingsApi = {
+  getAiSettings: () => ipcRenderer.invoke('ai:get-settings'),
+  setAiSettings: (settings) => {
+    if (!isSafeAiSettings(settings)) return Promise.reject(new Error('invalid ai settings'))
+    return ipcRenderer.invoke('ai:set-settings', settings)
+  },
+  testAiSettings: (settings) => {
+    if (!isSafeAiSettings(settings)) return Promise.reject(new Error('invalid ai settings'))
+    return ipcRenderer.invoke('ai:chat', {
+      settings,
+      system: 'Reply with the single word: ok',
+      user: 'ping',
+    })
+  },
+}
+
+contextBridge.exposeInMainWorld('aiOfficeSettings', aiSettingsApi)
