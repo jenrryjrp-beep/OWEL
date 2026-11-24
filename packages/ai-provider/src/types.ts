@@ -20,6 +20,8 @@ export interface AiProviderMeta {
   label: string
   models: string[]
   defaultModel: string
+  /** endpoint a needsBaseUrl provider is seeded with (e.g. Zhipu's v4 API) */
+  defaultBaseUrl?: string
   keyPlaceholder: string
   needsBaseUrl?: boolean
 }

@@ -24,6 +24,16 @@ export function gensparkAttributionHeaders(baseUrl?: string): Record<string, str
     : {}
 }
 
+/**
+ * OWEL ships preconfigured for Zhipu AI (GLM): the OpenAI-compatible `custom`
+ * slot is seeded with Zhipu's v4 endpoint and glm-4-flash, so a fresh install
+ * only needs the API key. Any other OpenAI-compatible server (Ollama, LM
+ * Studio, vLLM, OpenRouter…) works by overwriting these two fields in
+ * Settings → AI Provider.
+ */
+export const ZHIPU_BASE_URL = 'https://open.bigmodel.cn/api/paas/v4'
+export const ZHIPU_DEFAULT_MODEL = 'glm-4-flash'
+
 export const AI_PROVIDERS: AiProviderMeta[] = [
   {
     id: 'genspark',
@@ -79,14 +89,16 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
   },
   {
     id: 'custom',
-    label: 'Local / Custom (OpenAI-compatible)',
+    label: 'Zhipu AI (GLM) · OpenAI-compatible',
     // Free-text model field in the UI — this slot is not restricted to any
-    // fixed model list. Works with Ollama, LM Studio, vLLM, llama.cpp
-    // server, text-generation-webui, OpenRouter, or any other endpoint that
-    // implements the OpenAI chat/completions wire protocol.
+    // fixed model list. It ships pointing at Zhipu AI, and works equally with
+    // Ollama, LM Studio, vLLM, llama.cpp server, text-generation-webui,
+    // OpenRouter, or any other endpoint that implements the OpenAI
+    // chat/completions wire protocol.
     models: [],
-    defaultModel: '',
-    keyPlaceholder: 'sk-... (leave blank if your server needs no key)',
+    defaultModel: ZHIPU_DEFAULT_MODEL,
+    defaultBaseUrl: ZHIPU_BASE_URL,
+    keyPlaceholder: 'Zhipu API Key (leave blank if your server needs no key)',
     needsBaseUrl: true,
   },
 ]
@@ -105,7 +117,7 @@ export function defaultAiSettings(
     providers[meta.id] = {
       apiKey: defaultApiKeys?.[meta.id] ?? '',
       model: meta.defaultModel,
-      baseUrl: meta.needsBaseUrl ? '' : undefined,
+      baseUrl: meta.needsBaseUrl ? (meta.defaultBaseUrl ?? '') : undefined,
     }
   }
   return { provider: 'custom', providers }

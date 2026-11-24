@@ -104,8 +104,8 @@ function assertModuleTreesPresent() {
 
 /** @type {import('electron-builder').Configuration} */
 const config = {
-  appId: 'com.genoffice.app',
-  productName: 'GenOffice',
+  appId: 'com.owel.desktop',
+  productName: 'OWEL',
   // Resolved from the installed electron package so dependency bumps can
   // never leave a stale hard-coded pin behind (packaging would silently ship
   // the old runtime).
@@ -246,9 +246,15 @@ const config = {
     ],
   },
   win: {
+    // OWEL for Windows ships as a single portable .exe, never an installer:
+    // the user copies it to an internal or removable drive and runs it from
+    // there. electron-builder injects PORTABLE_EXECUTABLE_DIR at launch, and
+    // the shell's main process moves userData/sessionData/logs/crashes into
+    // <exe dir>/owel-data (apps/shell/src/main/index.ts), so the host machine
+    // keeps no settings, AI keys or Chromium cache.
     target: [
       {
-        target: 'nsis',
+        target: 'portable',
         arch: ['x64'],
       },
     ],
@@ -268,10 +274,8 @@ const config = {
   linux: {
     // AppImage (self-contained, any distro) + deb (apt install, pulls in the
     // GTK/NSS runtime deps) + rpm (dnf/zypper install on Fedora / RHEL /
-    // openSUSE). Default artifact names are kept on purpose —
-    // GenOffice-<v>.AppImage / genoffice_<v>_amd64.deb — because the public
-    // README download links and the already-published linux-v0.5.149 release
-    // use them.
+    // openSUSE). Default artifact names (OWEL-<v>.AppImage) follow productName;
+    // deb and rpm pin their own names in the blocks below.
     target: [
       { target: 'AppImage', arch: ['x64'] },
       { target: 'deb', arch: ['x64'] },
@@ -288,15 +292,15 @@ const config = {
     // mac and win name the binary from productName; linux instead derives it
     // from package.json "name", and "@genoffice/shell" sanitizes to the
     // invalid "@genofficeshell". Setting it explicitly also makes the
-    // generated genoffice.desktop match the WM_CLASS Electron reports (it
+    // generated owel.desktop match the WM_CLASS Electron reports (it
     // takes that from the executable basename), so the running window links
     // back to its launcher entry.
-    executableName: 'genoffice',
+    executableName: 'owel',
     // Electron takes its X11 app_id from package.json "desktopName"
-    // (genoffice.desktop); syncDesktopName makes electron-builder name the
+    // (owel.desktop); syncDesktopName makes electron-builder name the
     // .desktop file and its StartupWMClass from the same value. Without it
-    // StartupWMClass falls back to productName ("GenOffice"), which does not
-    // match the "genoffice" WM_CLASS the window actually reports — and X11
+    // StartupWMClass falls back to productName ("OWEL"), which does not
+    // match the "owel" WM_CLASS the window actually reports — and X11
     // compares case-sensitively, so the taskbar shows an unlinked window.
     syncDesktopName: true,
     extraResources: [
@@ -306,17 +310,14 @@ const config = {
       },
     ],
   },
-  // Same "@genoffice/shell" problem as executableName above: the default deb
-  // artifact name derives from package.json "name", and the scope's "/" makes
-  // fpm treat "@genoffice" as a directory. Spell the published name out
-  // (genoffice_<version>_amd64.deb, matching the linux-v0.5.149 release).
-  // packageName pins the control Package field to the same value the 0.5.149
-  // deb shipped with — apt treats a different Package name as an unrelated
-  // install, breaking upgrades. Without it, fpm receives productName
-  // "GenOffice" and only happens to downcase it to the right value.
+      // Same "@genoffice/shell" problem as executableName above: the default deb
+    // artifact name derives from package.json "name", and the scope's "/" makes
+    // fpm treat "@genoffice" as a directory. Spelling the published name out
+    // (owel_<version>_amd64.deb) also pins the deb control Package field, so
+    // apt treats successive OWEL releases as upgrades of the same package.
   deb: {
-    artifactName: 'genoffice_${version}_${arch}.deb',
-    packageName: 'genoffice',
+    artifactName: 'owel_${version}_${arch}.deb',
+    packageName: 'owel',
   },
   // Same "@genoffice/shell" naming problem as deb: spell the artifact name
   // out (${arch} expands to the rpm arch string, x86_64) and pin the rpm
@@ -330,13 +331,14 @@ const config = {
   // latest-linux.yml keeps listing exactly what the CDN pipeline uploads
   // (AppImage + deb) and the promote workflow needs no rpm alias.
   rpm: {
-    artifactName: 'genoffice-${version}.${arch}.rpm',
-    packageName: 'genoffice',
+    artifactName: 'owel-${version}.${arch}.rpm',
+    packageName: 'owel',
     publish: null,
   },
-  nsis: {
-    oneClick: false,
-    allowToChangeInstallationDirectory: true,
+  // Portable packaging: one self-contained exe, no install/uninstall step.
+  // (The portable target reuses NSIS internally as its launcher.)
+  portable: {
+    artifactName: 'OWEL-${version}-portable.exe',
   },
   beforePack: async (context) => {
     assertModuleTreesPresent()

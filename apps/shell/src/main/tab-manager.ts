@@ -52,7 +52,7 @@ const HOME_ID = 'home'
  */
 export class TabManager {
   private readonly tabs: TabRecord[] = [
-    { id: HOME_ID, kind: 'home', view: null, title: 'GenOffice' },
+    { id: HOME_ID, kind: 'home', view: null, title: 'OWEL' },
   ]
   private activeId: string = HOME_ID
   private nextId = 1
@@ -140,7 +140,7 @@ export class TabManager {
       id,
       kind: 'docs',
       view,
-      title: openPath ? basename(openPath) : this.untitled('docs', 'GenOffice Docs'),
+      title: openPath ? basename(openPath) : this.untitled('docs', 'OWEL Docs'),
       filePath: openPath,
     })
     this.activateTab(id)
@@ -158,7 +158,7 @@ export class TabManager {
       id,
       kind: 'sheets',
       view,
-      title: openPath ? basename(openPath) : this.untitled('sheets', 'AI Sheets'),
+      title: openPath ? basename(openPath) : this.untitled('sheets', 'OWEL Sheets'),
       filePath: openPath,
     })
     this.activateTab(id)
@@ -175,7 +175,7 @@ export class TabManager {
       id,
       kind: 'slides',
       view,
-      title: openPath ? basename(openPath) : this.untitled('slides', 'AI Slides'),
+      title: openPath ? basename(openPath) : this.untitled('slides', 'OWEL Slides'),
       filePath: openPath,
     })
     this.activateTab(id)
@@ -203,7 +203,7 @@ export class TabManager {
       id,
       kind: 'markdown',
       view,
-      title: openPath ? basename(openPath) : this.untitled('markdown', 'AI Markdown'),
+      title: openPath ? basename(openPath) : this.untitled('markdown', 'OWEL Markdown'),
       filePath: openPath,
     })
     this.activateTab(id)

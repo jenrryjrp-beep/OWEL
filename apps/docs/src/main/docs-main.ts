@@ -174,7 +174,7 @@ const tMain = createI18n({
     menuMacros: '宏',
     menuWindow: '窗口',
     menuHelp: '帮助',
-    menuDocsHelp: 'GenOffice Docs 帮助',
+    menuDocsHelp: 'OWEL Docs 帮助',
   },
   en: {
     dlgOpenDoc: 'Open Document',
@@ -268,7 +268,7 @@ const tMain = createI18n({
     menuMacros: 'Macros',
     menuWindow: 'Window',
     menuHelp: 'Help',
-    menuDocsHelp: 'GenOffice Docs Help',
+    menuDocsHelp: 'OWEL Docs Help',
   },
   ja: {
     dlgOpenDoc: '文書を開く',
@@ -362,7 +362,7 @@ const tMain = createI18n({
     menuMacros: 'マクロ',
     menuWindow: 'ウィンドウ',
     menuHelp: 'ヘルプ',
-    menuDocsHelp: 'GenOffice Docs ヘルプ',
+    menuDocsHelp: 'OWEL Docs ヘルプ',
   },
   ko: {
     dlgOpenDoc: '문서 열기',
@@ -457,7 +457,7 @@ const tMain = createI18n({
     menuMacros: '매크로',
     menuWindow: '창',
     menuHelp: '도움말',
-    menuDocsHelp: 'GenOffice Docs 도움말',
+    menuDocsHelp: 'OWEL Docs 도움말',
   },
   fr: {
     dlgOpenDoc: 'Ouvrir un document',
@@ -553,7 +553,7 @@ const tMain = createI18n({
     menuMacros: 'Macros',
     menuWindow: 'Fenêtre',
     menuHelp: 'Aide',
-    menuDocsHelp: 'Aide GenOffice Docs',
+    menuDocsHelp: 'Aide OWEL Docs',
   },
   de: {
     dlgOpenDoc: 'Dokument öffnen',
@@ -649,7 +649,7 @@ const tMain = createI18n({
     menuMacros: 'Makros',
     menuWindow: 'Fenster',
     menuHelp: 'Hilfe',
-    menuDocsHelp: 'GenOffice Docs-Hilfe',
+    menuDocsHelp: 'OWEL Docs-Hilfe',
   },
   es: {
     dlgOpenDoc: 'Abrir documento',
@@ -744,7 +744,7 @@ const tMain = createI18n({
     menuMacros: 'Macros',
     menuWindow: 'Ventana',
     menuHelp: 'Ayuda',
-    menuDocsHelp: 'Ayuda de GenOffice Docs',
+    menuDocsHelp: 'Ayuda de OWEL Docs',
   },
   th: {
     dlgOpenDoc: 'เปิดเอกสาร',
@@ -838,7 +838,7 @@ const tMain = createI18n({
     menuMacros: 'แมโคร',
     menuWindow: 'หน้าต่าง',
     menuHelp: 'วิธีใช้',
-    menuDocsHelp: 'วิธีใช้ GenOffice Docs',
+    menuDocsHelp: 'วิธีใช้ OWEL Docs',
   },
   id: {
     dlgOpenDoc: 'Buka Dokumen',
@@ -932,7 +932,7 @@ const tMain = createI18n({
     menuMacros: 'Makro',
     menuWindow: 'Jendela',
     menuHelp: 'Bantuan',
-    menuDocsHelp: 'Bantuan GenOffice Docs',
+    menuDocsHelp: 'Bantuan OWEL Docs',
   },
   ru: {
     dlgOpenDoc: 'Открыть документ',
@@ -1027,7 +1027,7 @@ const tMain = createI18n({
     menuMacros: 'Макросы',
     menuWindow: 'Окно',
     menuHelp: 'Справка',
-    menuDocsHelp: 'Справка GenOffice Docs',
+    menuDocsHelp: 'Справка OWEL Docs',
   },
   ar: {
     dlgOpenDoc: 'فتح مستند',
@@ -1122,7 +1122,7 @@ const tMain = createI18n({
     menuMacros: 'وحدات الماكرو',
     menuWindow: 'نافذة',
     menuHelp: 'تعليمات',
-    menuDocsHelp: 'تعليمات GenOffice Docs',
+    menuDocsHelp: 'تعليمات OWEL Docs',
   },
   pt: {
     dlgOpenDoc: 'Abrir Documento',
@@ -1217,7 +1217,7 @@ const tMain = createI18n({
     menuMacros: 'Macros',
     menuWindow: 'Janela',
     menuHelp: 'Ajuda',
-    menuDocsHelp: 'Ajuda do GenOffice Docs',
+    menuDocsHelp: 'Ajuda do OWEL Docs',
   },
   it: {
     dlgOpenDoc: 'Apri documento',
@@ -1312,7 +1312,7 @@ const tMain = createI18n({
     menuMacros: 'Macro',
     menuWindow: 'Finestra',
     menuHelp: 'Aiuto',
-    menuDocsHelp: 'Guida di GenOffice Docs',
+    menuDocsHelp: 'Guida di OWEL Docs',
   },
   pl: {
     dlgOpenDoc: 'Otwórz dokument',
@@ -1407,7 +1407,7 @@ const tMain = createI18n({
     menuMacros: 'Makra',
     menuWindow: 'Okno',
     menuHelp: 'Pomoc',
-    menuDocsHelp: 'Pomoc GenOffice Docs',
+    menuDocsHelp: 'Pomoc OWEL Docs',
   },
   nl: {
     dlgOpenDoc: 'Document openen',
@@ -1502,7 +1502,7 @@ const tMain = createI18n({
     menuMacros: "Macro's",
     menuWindow: 'Venster',
     menuHelp: 'Help',
-    menuDocsHelp: 'GenOffice Docs Help',
+    menuDocsHelp: 'OWEL Docs Help',
   },
   ms: {
     dlgOpenDoc: 'Buka Dokumen',
@@ -1597,7 +1597,7 @@ const tMain = createI18n({
     menuMacros: 'Makro',
     menuWindow: 'Tetingkap',
     menuHelp: 'Bantuan',
-    menuDocsHelp: 'Bantuan GenOffice Docs',
+    menuDocsHelp: 'Bantuan OWEL Docs',
   },
   he: {
     dlgOpenDoc: 'פתיחת מסמך',
@@ -1690,7 +1690,7 @@ const tMain = createI18n({
     menuMacros: 'פקודות מאקרו',
     menuWindow: 'חלון',
     menuHelp: 'עזרה',
-    menuDocsHelp: 'עזרה של GenOffice Docs',
+    menuDocsHelp: 'עזרה של OWEL Docs',
   },
   hi: {
     dlgOpenDoc: 'दस्तावेज़ खोलें',
@@ -1785,7 +1785,7 @@ const tMain = createI18n({
     menuMacros: 'मैक्रो',
     menuWindow: 'विंडो',
     menuHelp: 'सहायता',
-    menuDocsHelp: 'GenOffice Docs सहायता',
+    menuDocsHelp: 'OWEL Docs सहायता',
   },
   'zh-TW': {
     dlgOpenDoc: '開啟文件',
@@ -1877,7 +1877,7 @@ const tMain = createI18n({
     menuMacros: '巨集',
     menuWindow: '視窗',
     menuHelp: '說明',
-    menuDocsHelp: 'GenOffice Docs 說明',
+    menuDocsHelp: 'OWEL Docs 說明',
   },
 })
 const tm = (key: Parameters<typeof tMain>[1], params?: Parameters<typeof tMain>[2]) =>
@@ -1954,7 +1954,7 @@ async function saveDialog(event: IpcMainInvokeEvent, options: SaveDialogOptions)
   return showSaveDialogWithMemory(dialog, dialogParent(event), options, defaultSaveDir())
 }
 
-/** default folder where new files land on their first (silent) save; shared with the other editors via shell. User-configurable (app-settings.json), falls back to <Documents>/GenOffice. */
+/** default folder where new files land on their first (silent) save; shared with the other editors via shell. User-configurable (app-settings.json), falls back to <Documents>/OWEL. */
 export function defaultSaveDir(): string {
   return configuredDefaultSaveDir(app)
 }
@@ -3523,7 +3523,7 @@ export function createDocsWindow(openPath?: string): BrowserWindow {
     height: 900,
     minWidth: 980,
     minHeight: 600,
-    title: 'GenOffice Docs',
+    title: 'OWEL Docs',
     // Word-like custom title bar (document name centered, quick-access buttons)
     ...(process.platform === 'darwin'
       ? { titleBarStyle: 'hiddenInset' as const }
@@ -3814,8 +3814,8 @@ export function startDocsStandalone(): void {
   installContextMenu(app, () => contextMenuLabels(getUiLang()))
   // dev runs must not share the packaged app's userData (recent files, AI settings)
   // or its single-instance lock — otherwise `npm run dev` silently quits whenever
-  // the installed GenOffice Docs is open and forwards its argv there instead.
-  if (isDev) app.setPath('userData', join(app.getPath('appData'), 'GenOffice Docs Dev'))
+  // the installed OWEL Docs is open and forwards its argv there instead.
+  if (isDev) app.setPath('userData', join(app.getPath('appData'), 'OWEL Docs Dev'))
 
   const hasSingleInstanceLock = app.requestSingleInstanceLock()
   if (!hasSingleInstanceLock) {

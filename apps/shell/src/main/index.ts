@@ -3,6 +3,7 @@ import {
   copyFileSync,
   cpSync,
   existsSync,
+  mkdirSync,
   readFileSync,
   readdirSync,
   renameSync,
@@ -164,20 +165,51 @@ import { isUpdateChannel, type UpdateChannel } from '../shared/update-api'
  * apps/sheets/out), so build those before running the shell.
  */
 
+// ── Portable mode (Windows) ────────────────────────────────────────────────
+// The Windows build ships as a single portable .exe (electron-builder target
+// "portable"), which unpacks itself into %TEMP% at launch. Its default
+// userData path would be %APPDATA%, leaving settings, the AI provider key and
+// Chromium's cache on whatever machine it runs on. PORTABLE_EXECUTABLE_DIR —
+// injected by that target — names the folder the .exe itself lives in, so all
+// writable state goes to <exe dir>/owel-data and the app can be carried on a
+// removable drive together with its data.
+const PORTABLE_DIR = process.env.PORTABLE_EXECUTABLE_DIR
+if (PORTABLE_DIR) {
+  const portableDataDir = join(PORTABLE_DIR, 'owel-data')
+  const portablePaths = [
+    ['userData', ''],
+    ['sessionData', 'session'],
+    ['logs', 'logs'],
+    ['crashDumps', 'crash'],
+  ] as const
+  for (const [name, sub] of portablePaths) {
+    try {
+      const dir = sub ? join(portableDataDir, sub) : portableDataDir
+      mkdirSync(dir, { recursive: true })
+      app.setPath(name, dir)
+    } catch (err) {
+      // a read-only or unplugged drive must not stop the app from starting
+      console.warn(`[owel] portable ${name} path unavailable, using the default:`, err)
+    }
+  }
+}
+
 // ANY unpacked run (`npm run shell`, `npm run dev`, `npx electron .`) must not
 // share the installed app's userData or single-instance lock — otherwise a dev
-// run silently quits and forwards its argv to the running installed GenOffice.
+// run silently quits and forwards its argv to the running installed OWEL.
 // GENOFFICE_USER_DATA: test drivers point this at a scratch dir so an
 // automated instance can run alongside the dev instance (separate lock).
 if (!app.isPackaged)
   app.setPath(
     'userData',
-    process.env.GENOFFICE_USER_DATA ?? join(app.getPath('appData'), 'GenOffice Dev'),
+    process.env.GENOFFICE_USER_DATA ?? join(app.getPath('appData'), 'OWEL Dev'),
   )
 
-// The product rename from "AI Office" to GenOffice changed the userData path; migrate old user data once
-if (app.isPackaged) {
-  const oldDir = join(app.getPath('appData'), 'AI Office')
+// The fork rename from GenOffice to OWEL changed the userData path; migrate the
+// previous install's data once. A portable run keeps its data next to the exe
+// (see above), so it must never pull the host machine's folder onto the drive.
+if (app.isPackaged && !PORTABLE_DIR) {
+  const oldDir = join(app.getPath('appData'), 'GenOffice')
   const newDir = app.getPath('userData')
   const newEmpty = !existsSync(newDir) || readdirSync(newDir).length === 0
   if (newEmpty && existsSync(oldDir)) cpSync(oldDir, newDir, { recursive: true })
@@ -242,6 +274,9 @@ const APP_SETTINGS_PATH = () => join(app.getPath('userData'), 'app-settings.json
 
 let uiLang: Lang | null = null
 
+/** language of a new install (OS locale is deliberately not consulted) */
+const DEFAULT_UI_LANG: Lang = 'es'
+
 function currentLang(): Lang {
   if (uiLang) return uiLang
   if (process.env.GENOFFICE_LANG) {
@@ -251,7 +286,10 @@ function currentLang(): Lang {
   }
   const saved = readAppSettings(APP_SETTINGS_PATH()).language
   if (isLang(saved)) uiLang = saved
-  uiLang ??= normalizeLang(app.getLocale())
+  // OWEL is a Spanish-first product: a fresh install starts in Spanish even on
+  // an English-locale machine. The Settings language picker overrides this and
+  // is persisted, so the choice is honoured from the next launch on.
+  uiLang ??= DEFAULT_UI_LANG
   setUiLang(uiLang)
   return uiLang
 }
@@ -1429,7 +1467,7 @@ function createShellWindow(): void {
     height: 900,
     minWidth: 980,
     minHeight: 600,
-    title: 'GenOffice',
+    title: 'OWEL',
     // vibrancy: editor modules punch translucent regions (e.g. the slides
     // thumbnail pane) through to the desktop
     ...(process.platform === 'darwin'

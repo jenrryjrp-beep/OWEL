@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   AI_PROVIDERS,
+  ZHIPU_BASE_URL,
+  ZHIPU_DEFAULT_MODEL,
   defaultAiSettings,
   isSafeAiSettings,
   resolveAiSettings,
@@ -14,7 +16,7 @@ describe('defaultAiSettings', () => {
       expect(settings.providers[meta.id].apiKey).toBe('')
       expect(settings.providers[meta.id].model).toBe(meta.defaultModel)
     }
-    expect(settings.providers.custom.baseUrl).toBe('')
+    expect(settings.providers.custom.baseUrl).toBe(ZHIPU_BASE_URL)
     expect(settings.providers.anthropic.baseUrl).toBeUndefined()
   })
 
@@ -28,15 +30,16 @@ describe('defaultAiSettings', () => {
     const custom = AI_PROVIDERS.find((p) => p.id === 'custom')
     expect(custom).toBeDefined()
     expect(custom?.models).toEqual([])
-    expect(custom?.defaultModel).toBe('')
+    expect(custom?.defaultModel).toBe(ZHIPU_DEFAULT_MODEL)
+    expect(custom?.defaultBaseUrl).toBe(ZHIPU_BASE_URL)
     expect(custom?.needsBaseUrl).toBe(true)
   })
 
-  it('starts a fresh install with the custom slot blank — no gateway baked in', () => {
+  it('starts a fresh install preconfigured for Zhipu AI, with no key', () => {
     const settings = defaultAiSettings()
     expect(settings.provider).toBe('custom')
-    expect(settings.providers.custom.model).toBe('')
-    expect(settings.providers.custom.baseUrl).toBe('')
+    expect(settings.providers.custom.model).toBe(ZHIPU_DEFAULT_MODEL)
+    expect(settings.providers.custom.baseUrl).toBe(ZHIPU_BASE_URL)
     expect(settings.providers.custom.apiKey).toBe('')
   })
 
@@ -56,9 +59,10 @@ describe('defaultAiSettings', () => {
     // it IS used — a legacy file would send document text to OpenAI.
     const resolved = resolveAiSettings({ apiKey: 'oai-legacy' }, defaultAiSettings())
     expect(resolved.provider).toBe('custom')
-    expect(resolved.providers.custom.baseUrl).toBe('')
+    // the shipped Zhipu defaults stay, the legacy key and endpoint do not
+    expect(resolved.providers.custom.baseUrl).toBe(ZHIPU_BASE_URL)
     expect(resolved.providers.custom.apiKey).toBe('')
-    expect(resolved.providers.custom.model).toBe('')
+    expect(resolved.providers.custom.model).toBe(ZHIPU_DEFAULT_MODEL)
   })
 
   describe('isSafeAiSettings', () => {

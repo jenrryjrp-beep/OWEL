@@ -1322,7 +1322,7 @@ export async function createSheetsWindow(
     minWidth: 1024,
     minHeight: 680,
     show: false,
-    title: 'GenOffice Sheets',
+    title: 'OWEL Sheets',
     // Traffic lights sit inside the toolbar row.
     ...(process.platform === 'darwin' ? { titleBarStyle: 'hiddenInset' as const } : {}),
     webPreferences: {
