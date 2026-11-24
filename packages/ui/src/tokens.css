@@ -1,4 +1,4 @@
-/* GenOffice design tokens — the single source of truth for UI chrome colors.
+/* OWEL design tokens — the single source of truth for UI chrome colors.
  * Theme switching: light defaults in :root, [data-theme='dark'] overrides,
  * prefers-color-scheme fallback for system mode (no data-theme attribute).
  * Per-app accents (--accent / --accent-dark / --accent-soft) live in each
@@ -6,158 +6,174 @@
  * palettes) never live here and never reference these tokens. */
 
 :root {
-  /* chrome */
+  /* chrome — cool neutral ramp with an indigo-friendly tint */
   --surface: #ffffff;
-  --surface-subtle: #f6f7f9;
+  --surface-subtle: #f5f5fa;
   --chrome-bg: #ffffff;
-  --canvas: #e6e6e6;
-  --border: #e3e6ea;
-  --border-subtle: #efefef;
-  --border-strong: #d9d9d9;
-  --border-hover: #d3d7dd;
-  --text: #242424;
-  --text-primary: #232425;
-  --text-secondary: #606366;
-  --text-tertiary: #909499;
-  --text-muted: #878e96;
-  --text-dim: #605e5c;
-  --hover: #f5f5f5;
-  --pressed: #edebe9;
-  --active-bg: #eaeaea;
-  --bg-hover: #f5f5f5;
-  --bg-hover-subtle: #f0f2f5;
-  --bg-hover-strong: #e8eaee;
-  --bg-hover-accent: #e0e4ea;
-  --bg-content: #fafafa;
-  --icon-muted: #b9bfc7;
+  --canvas: #e9e9f1;
+  --border: #e4e4ee;
+  --border-subtle: #eeeef6;
+  --border-strong: #d8d8e6;
+  --border-hover: #c9c9dd;
+  --text: #1b1b24;
+  --text-primary: #191922;
+  --text-secondary: #5b5d6e;
+  --text-tertiary: #8b8d9e;
+  --text-muted: #87899a;
+  --text-dim: #5e6070;
+  --hover: #f3f3f9;
+  --pressed: #e9e9f2;
+  --active-bg: #e7e7f1;
+  --bg-hover: #f2f2f8;
+  --bg-hover-subtle: #eeeef6;
+  --bg-hover-strong: #e5e5f0;
+  --bg-hover-accent: #e2e2f0;
+  --bg-content: #f8f8fc;
+  --icon-muted: #b6b8c7;
   --danger: #d13438;
   --danger-bg: #fdf3f3;
   --danger-border: #f0c8c9;
-  --color-bg-overlay: rgb(0 0 0 / 50%);
-  --shadow-modal-strong: 0 20px 25px rgb(0 0 0 / 10%);
+  --color-bg-overlay: rgb(17 17 27 / 48%);
+  --shadow-modal-strong: 0 18px 48px rgb(20 20 35 / 16%);
 
   /* AI panel (canonical names from the former per-app copies) */
   --gs-font-sans:
-    'Arial', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     sans-serif;
-  --color-btn-primary: #232425;
-  --color-btn-primary-hover: #393a3b;
+  --color-btn-primary: #1f1f29;
+  --color-btn-primary-hover: #33333f;
   --color-btn-primary-text: #ffffff;
-  --color-brand-secondary: #0f7fff;
-  --color-text-primary: #232425;
-  --color-text-secondary: #606366;
-  --color-text-tertiary: #909499;
+  --color-brand-secondary: #4f46e5;
+  --color-text-primary: #191922;
+  --color-text-secondary: #5b5d6e;
+  --color-text-tertiary: #8b8d9e;
   --color-bg-page: #ffffff;
-  --color-bg-subtle: #f5f5f5;
-  --color-border-default: #eaeaea;
-  --color-border-strong: #d0d3d8;
-  --color-border-brand: #0f7fff;
+  --color-bg-subtle: #f5f5fa;
+  --color-border-default: #e7e7f0;
+  --color-border-strong: #d8d8e6;
+  --color-border-brand: #4f46e5;
   --color-error: #ef4444;
   --color-error-hover: #dc2626;
 
   /* non-color */
   --radius-6: 6px;
   --radius-8: 8px;
+  --radius-10: 10px;
   --radius-12: 12px;
   --radius-16: 16px;
+  --radius-18: 18px;
   --radius-30: 30px;
+  --radius-pill: 999px;
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --text-body-lg: 18px;
   --text-small: 14px;
   --text-caption: 12px;
 
+  /* elevation — soft, low-contrast cards and floating surfaces */
+  --shadow-card: 0 1px 2px rgb(20 20 35 / 5%), 0 6px 18px rgb(20 20 35 / 4%);
+  --shadow-card-hover: 0 2px 4px rgb(20 20 35 / 7%), 0 14px 32px rgb(20 20 35 / 10%);
+  --shadow-popover: 0 12px 32px rgb(20 20 35 / 16%), 0 2px 6px rgb(20 20 35 / 8%);
+
   color-scheme: light;
 }
 
 [data-theme='dark'] {
-  --surface: #1e1e1e;
-  --surface-subtle: #2a2a2a;
-  --chrome-bg: #252525;
-  --canvas: #2b2b2b;
-  --border: #3a3a3a;
-  --border-subtle: #3a3a3a;
-  --border-strong: #555;
-  --border-hover: #555;
-  --text: #e4e4e4;
-  --text-primary: #e4e4e4;
-  --text-secondary: #a0a0a0;
-  --text-tertiary: #a0a0a0;
-  --text-muted: #8a8a8a;
-  --text-dim: #a0a0a0;
-  --hover: #333;
-  --pressed: #3c3c3c;
-  --active-bg: #454545;
-  --bg-hover: #333;
-  --bg-hover-subtle: #333;
-  --bg-hover-strong: #444;
-  --bg-hover-accent: #444;
-  --bg-content: #1a1a1a;
-  --icon-muted: #666;
+  --surface: #1b1b23;
+  --surface-subtle: #23232d;
+  --chrome-bg: #202029;
+  --canvas: #262630;
+  --border: #32323f;
+  --border-subtle: #2b2b37;
+  --border-strong: #4a4a5c;
+  --border-hover: #585871;
+  --text: #e6e6f2;
+  --text-primary: #e9e9f5;
+  --text-secondary: #a6a8ba;
+  --text-tertiary: #9a9cb0;
+  --text-muted: #8a8c9e;
+  --text-dim: #a2a4b6;
+  --hover: #2c2c38;
+  --pressed: #373746;
+  --active-bg: #40404f;
+  --bg-hover: #2c2c38;
+  --bg-hover-subtle: #2a2a35;
+  --bg-hover-strong: #3d3d4c;
+  --bg-hover-accent: #3d3d4c;
+  --bg-content: #15151b;
+  --icon-muted: #6b6d80;
   --danger: #d13438;
   --danger-bg: #3a2020;
   --danger-border: #5a3030;
-  --color-bg-overlay: rgb(0 0 0 / 60%);
-  --shadow-modal-strong: 0 20px 25px rgb(0 0 0 / 30%);
+  --color-bg-overlay: rgb(8 8 14 / 62%);
+  --shadow-modal-strong: 0 20px 30px rgb(0 0 0 / 40%);
 
-  --color-btn-primary: #e4e4e4;
-  --color-btn-primary-hover: #d0d0d0;
-  --color-btn-primary-text: #1e1e1e;
-  --color-brand-secondary: #4a9eff;
-  --color-text-primary: #e4e4e4;
-  --color-text-secondary: #a0a0a0;
-  --color-text-tertiary: #8a8a8a;
-  --color-bg-page: #1e1e1e;
-  --color-bg-subtle: #2a2a2a;
-  --color-border-default: #3a3a3a;
-  --color-border-strong: #555;
-  --color-border-brand: #4a9eff;
+  --color-btn-primary: #e6e6f2;
+  --color-btn-primary-hover: #d0d0e0;
+  --color-btn-primary-text: #17171d;
+  --color-brand-secondary: #9a95ff;
+  --color-text-primary: #e9e9f5;
+  --color-text-secondary: #a6a8ba;
+  --color-text-tertiary: #9a9cb0;
+  --color-bg-page: #1b1b23;
+  --color-bg-subtle: #23232d;
+  --color-border-default: #32323f;
+  --color-border-strong: #4a4a5c;
+  --color-border-brand: #9a95ff;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 8px 24px rgb(0 0 0 / 28%);
+  --shadow-card-hover: 0 2px 6px rgb(0 0 0 / 50%), 0 16px 36px rgb(0 0 0 / 36%);
+  --shadow-popover: 0 14px 34px rgb(0 0 0 / 55%), 0 2px 8px rgb(0 0 0 / 40%);
 
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']):not([data-theme='dark']) {
-    --surface: #1e1e1e;
-    --surface-subtle: #2a2a2a;
-    --chrome-bg: #252525;
-    --canvas: #2b2b2b;
-    --border: #3a3a3a;
-    --border-subtle: #3a3a3a;
-    --border-strong: #555;
-    --border-hover: #555;
-    --text: #e4e4e4;
-    --text-primary: #e4e4e4;
-    --text-secondary: #a0a0a0;
-    --text-tertiary: #a0a0a0;
-    --text-muted: #8a8a8a;
-    --text-dim: #a0a0a0;
-    --hover: #333;
-    --pressed: #3c3c3c;
-    --active-bg: #454545;
-    --bg-hover: #333;
-    --bg-hover-subtle: #333;
-    --bg-hover-strong: #444;
-    --bg-hover-accent: #444;
-    --bg-content: #1a1a1a;
-    --icon-muted: #666;
+    --surface: #1b1b23;
+    --surface-subtle: #23232d;
+    --chrome-bg: #202029;
+    --canvas: #262630;
+    --border: #32323f;
+    --border-subtle: #2b2b37;
+    --border-strong: #4a4a5c;
+    --border-hover: #585871;
+    --text: #e6e6f2;
+    --text-primary: #e9e9f5;
+    --text-secondary: #a6a8ba;
+    --text-tertiary: #9a9cb0;
+    --text-muted: #8a8c9e;
+    --text-dim: #a2a4b6;
+    --hover: #2c2c38;
+    --pressed: #373746;
+    --active-bg: #40404f;
+    --bg-hover: #2c2c38;
+    --bg-hover-subtle: #2a2a35;
+    --bg-hover-strong: #3d3d4c;
+    --bg-hover-accent: #3d3d4c;
+    --bg-content: #15151b;
+    --icon-muted: #6b6d80;
     --danger: #d13438;
     --danger-bg: #3a2020;
     --danger-border: #5a3030;
-    --color-bg-overlay: rgb(0 0 0 / 60%);
-    --shadow-modal-strong: 0 20px 25px rgb(0 0 0 / 30%);
+    --color-bg-overlay: rgb(8 8 14 / 62%);
+    --shadow-modal-strong: 0 20px 30px rgb(0 0 0 / 40%);
 
-    --color-btn-primary: #e4e4e4;
-    --color-btn-primary-hover: #d0d0d0;
-    --color-btn-primary-text: #1e1e1e;
-    --color-brand-secondary: #4a9eff;
-    --color-text-primary: #e4e4e4;
-    --color-text-secondary: #a0a0a0;
-    --color-text-tertiary: #8a8a8a;
-    --color-bg-page: #1e1e1e;
-    --color-bg-subtle: #2a2a2a;
-    --color-border-default: #3a3a3a;
-    --color-border-strong: #555;
-    --color-border-brand: #4a9eff;
+    --color-btn-primary: #e6e6f2;
+    --color-btn-primary-hover: #d0d0e0;
+    --color-btn-primary-text: #17171d;
+    --color-brand-secondary: #9a95ff;
+    --color-text-primary: #e9e9f5;
+    --color-text-secondary: #a6a8ba;
+    --color-text-tertiary: #9a9cb0;
+    --color-bg-page: #1b1b23;
+    --color-bg-subtle: #23232d;
+    --color-border-default: #32323f;
+    --color-border-strong: #4a4a5c;
+    --color-border-brand: #9a95ff;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 8px 24px rgb(0 0 0 / 28%);
+    --shadow-card-hover: 0 2px 6px rgb(0 0 0 / 50%), 0 16px 36px rgb(0 0 0 / 36%);
+    --shadow-popover: 0 14px 34px rgb(0 0 0 / 55%), 0 2px 8px rgb(0 0 0 / 40%);
 
     color-scheme: dark;
   }

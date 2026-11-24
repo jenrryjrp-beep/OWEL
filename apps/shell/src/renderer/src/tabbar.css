@@ -3,9 +3,9 @@
  * Metrics copied from Chrome (macOS, light): 40px strip, 34px tabs that
  * shrink from 240px but never stretch, "+" hugging the last tab. */
 .tab-bar {
-  --tabstrip-bg: #ebebeb;
-  --tabstrip-text: #454746;
-  --tabstrip-text-active: #1f1f1f;
+  --tabstrip-bg: #f2f2f7;
+  --tabstrip-text: #565a68;
+  --tabstrip-text-active: #17181f;
   --tab-separator: rgba(0, 0, 0, 0.22);
   position: fixed;
   top: 0;
@@ -278,7 +278,7 @@
 /* ── Dark mode tab bar overrides ─────────────────────────── */
 
 [data-theme='dark'] .tab-bar {
-  --tabstrip-bg: #2a2a2a;
+  --tabstrip-bg: #202029;
   --tabstrip-text: #b0b0b0;
   --tabstrip-text-active: #e4e4e4;
   --tab-separator: rgba(255, 255, 255, 0.15);
@@ -304,7 +304,7 @@
 /* System dark: same overrides when following OS preference */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']):not([data-theme='dark']) .tab-bar {
-    --tabstrip-bg: #2a2a2a;
+    --tabstrip-bg: #202029;
     --tabstrip-text: #b0b0b0;
     --tabstrip-text-active: #e4e4e4;
     --tab-separator: rgba(255, 255, 255, 0.15);

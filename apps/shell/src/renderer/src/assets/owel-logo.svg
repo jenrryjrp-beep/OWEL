@@ -1,7 +1,11 @@
-<svg width="720" height="240" viewBox="0 0 720 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OWEL">
-  <rect width="240" height="240" rx="54" fill="black"/>
-  <rect x="51" y="46" width="90" height="108" rx="16" fill="white"/>
-  <rect x="99" y="86" width="90" height="108" rx="16" fill="white"/>
-  <path d="M99 102C99 93.1634 106.163 86 115 86H141V138C141 146.837 133.837 154 125 154H99V102Z" fill="black"/>
-  <text x="292" y="172" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="128" font-weight="700" letter-spacing="8" fill="black">OWEL</text>
+<svg width="760" height="240" viewBox="0 0 760 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OWEL">
+  <defs>
+    <mask id="owel-logo-mark" maskUnits="userSpaceOnUse" x="0" y="0" width="240" height="240">
+      <rect width="240" height="240" rx="68" fill="#fff" />
+      <circle cx="96" cy="92" r="46" stroke="#000" stroke-width="24" />
+      <rect x="156" y="152" width="44" height="44" rx="14" fill="#000" />
+    </mask>
+  </defs>
+  <rect width="240" height="240" rx="68" fill="black" mask="url(#owel-logo-mark)" />
+  <text x="272" y="164" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="110" font-weight="700" letter-spacing="2" fill="black">OWEL</text>
 </svg>

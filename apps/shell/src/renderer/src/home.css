@@ -1,9 +1,12 @@
 /* Shared chrome/AI-panel tokens come from @genoffice/ui/tokens.css (imported
  * before this file in main.tsx); only shell-specific tokens live here. */
 :root {
-  /* Genspark DS v4.1: guide/onboarding accent is the brand blue */
-  --accent: #0f7fff;
-  --accent-hover: #0e72e5;
+  /* OWEL brand accent: indigo, used only for chrome (never document content) */
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-soft: #eeedfd;
+  --accent-ring: rgb(79 70 229 / 20%);
+  --hero-gradient: linear-gradient(135deg, #efeefe 0%, #f8f8fd 55%, #fbfbfe 100%);
   --modal-width-sm: 480px;
   --avatar-bg: #e8ebef;
   --badge-bg: #eaf0fd;
@@ -21,8 +24,11 @@
 
 /* Explicit dark: [data-theme="dark"] on <html> */
 [data-theme='dark'] {
-  --accent: #3f99ff;
-  --accent-hover: #5ba5ff;
+  --accent: #9a95ff;
+  --accent-hover: #b3aeff;
+  --accent-soft: #262338;
+  --accent-ring: rgb(154 149 255 / 26%);
+  --hero-gradient: linear-gradient(135deg, #241f3a 0%, #1c1b26 55%, #1a1a21 100%);
   --avatar-bg: #333;
   --badge-bg: #2a3a4a;
   --checkbox-bg: #333;
@@ -35,8 +41,11 @@
 /* System dark: no data-theme or data-theme="system" — follow OS preference */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']):not([data-theme='dark']) {
-    --accent: #3f99ff;
-    --accent-hover: #5ba5ff;
+    --accent: #9a95ff;
+    --accent-hover: #b3aeff;
+    --accent-soft: #262338;
+    --accent-ring: rgb(154 149 255 / 26%);
+    --hero-gradient: linear-gradient(135deg, #241f3a 0%, #1c1b26 55%, #1a1a21 100%);
     --avatar-bg: #333;
     --badge-bg: #2a3a4a;
     --checkbox-bg: #333;
@@ -168,7 +177,7 @@ body.vib .home {
   font-variant-numeric: tabular-nums;
 }
 
-/* ---- bottom-left account entry (today = Genspark login, later = signup/account system) ---- */
+/* ---- bottom-left account entry (today = OWEL login, later = signup/account system) ---- */
 /* clicking it opens the settings modal (settings.css) directly, which hosts
    login/logout plus preferences (language / theme / save location / update channel) */
 
@@ -494,7 +503,7 @@ body.vib .home {
 
 /* segmented control: gray track, active segment = white card */
 /* segmented filter control: gray track, active segment = white card.
-   One shared 40px rail for the recents page and the Genspark Projects
+   One shared 40px rail for the recents page and the OWEL Projects
    toolbar (where it lines up with the 40px refresh button and search box). */
 .filter-pills,
 .cloud-seg {
@@ -1431,7 +1440,7 @@ body.vib .home {
   padding-top: 1px;
 }
 
-/* ── Cloud (Genspark web) projects ── */
+/* ── Cloud (OWEL web) projects ── */
 
 /* fixed header: the content column never scrolls; only .cloud-scroll does */
 /* whole page scrolls (same as the recents page) so the wheel works anywhere;
@@ -1580,7 +1589,7 @@ body.vib .home {
   margin-top: 0;
 }
 
-/* Genspark Projects list styled like the recent-files table: bordered
+/* OWEL Projects list styled like the recent-files table: bordered
    rounded container, column header, grid rows with hairline dividers */
 .cloud-table {
   border: 1px solid var(--border);
@@ -1759,4 +1768,366 @@ body.vib .home {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ── OWEL visual system ────────────────────────────────────────────────
+ * Presentation-only refresh of the home shell: softer surfaces, an indigo
+ * accent, rounder cards and a calmer type hierarchy. Every selector below
+ * already exists in the markup above — no layout or behaviour is redefined,
+ * and all chrome colors come from the semantic tokens (CLAUDE.md rule 1). */
+
+body {
+  font-family: 'Inter', -apple-system, var(--ui-cjk), 'Segoe UI', 'Microsoft YaHei', sans-serif;
+}
+
+.home {
+  background: var(--bg-content);
+}
+
+/* ---- sidebar ---- */
+
+.sidebar {
+  width: 248px;
+  padding: 20px 14px 14px;
+  border-right: 1px solid var(--border-subtle);
+  background: var(--surface);
+}
+
+.sidebar-logo {
+  padding: 0 10px;
+  margin-bottom: 18px;
+}
+
+.logo-lockup {
+  height: 26px;
+}
+
+.sidebar-nav {
+  gap: 3px;
+}
+
+.nav-item {
+  padding: 9px 12px;
+  border-radius: var(--radius-10);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.nav-item svg {
+  color: var(--text-tertiary);
+}
+
+.nav-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.nav-item:hover svg {
+  color: var(--text-secondary);
+}
+
+.nav-item.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.nav-item.active svg {
+  color: var(--accent);
+}
+
+.nav-count {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.nav-item.active .nav-count {
+  color: var(--accent);
+}
+
+/* ---- content + hero ---- */
+
+.content {
+  padding: 32px 40px 48px;
+}
+
+.home-hero {
+  margin: 0 0 26px;
+  padding: 26px 28px 28px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-18);
+  background: var(--hero-gradient);
+}
+
+.hero-title {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.28;
+}
+
+.hero-ask {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* ---- quick cards ---- */
+
+.quick-cards {
+  gap: 14px;
+}
+
+.quick-card {
+  padding: 18px 18px 17px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-14);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+}
+
+.quick-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-ring);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.quick-card:hover .quick-title {
+  color: var(--accent);
+}
+
+.quick-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.quick-sub {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+}
+
+.quick-folder {
+  border-radius: var(--radius-10);
+  border-color: var(--border-subtle);
+  color: var(--text-tertiary);
+}
+
+.ai-chip {
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* ---- recents toolbar ---- */
+
+.recents {
+  margin-top: 22px;
+}
+
+.recents-toolbar {
+  top: -32px;
+  padding: 8px 0 14px;
+}
+
+.file-count {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.filter-pills,
+.cloud-seg {
+  height: 36px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--checkbox-bg);
+}
+
+.filter-pill,
+.cloud-seg button {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.filter-pill.active,
+.cloud-seg button.active {
+  background: var(--surface);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--shadow-pill);
+}
+
+/* ---- file table ---- */
+
+.recent-table {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-14);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.recent-columns {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: var(--surface-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.recent-item {
+  transition: background 120ms ease;
+}
+
+.recent-item:hover {
+  background: var(--bg-hover);
+}
+
+.recent-name {
+  font-weight: 500;
+}
+
+.recent-time,
+.recent-size {
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- buttons + modal ---- */
+
+.btn {
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.btn-secondary {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+
+.modal {
+  border-radius: var(--radius-18);
+  box-shadow: var(--shadow-popover);
+}
+
+/* ---- project panel ---- */
+
+.proj-panel-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.proj-item-main {
+  border-radius: var(--radius-10);
+}
+
+.proj-item.active .proj-item-main {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.proj-item-count {
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-subtle);
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.proj-add-btn {
+  border-radius: var(--radius-8);
+}
+
+/* ---- account entry ---- */
+
+.account-btn {
+  border-radius: var(--radius-10);
+}
+
+.account-btn:hover {
+  background: var(--bg-hover);
+}
+
+.account-avatar.logged-in {
+  background: var(--accent);
+  color: var(--surface);
+}
+
+/* ---- cloud projects ---- */
+
+.cloud-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+}
+
+.cloud-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.cloud-table {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-14);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.cloud-columns {
+  background: var(--surface-subtle);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.cloud-row:hover {
+  background: var(--bg-hover);
+}
+
+.cloud-search {
+  border-radius: var(--radius-pill);
+  background: var(--surface-subtle);
+}
+
+.cloud-refresh-btn {
+  border-radius: var(--radius-pill);
 }
